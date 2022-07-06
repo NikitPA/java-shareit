@@ -1,7 +1,8 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.item;
 
-
-import lombok.Data;
+import lombok.*;
+import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.user.User;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -9,17 +10,25 @@ import javax.validation.constraints.NotNull;
 /**
  * // TODO .
  */
-@Data
-public class ItemDto {
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
+public class Item {
 
-    private final Long id;
+    @EqualsAndHashCode.Include
+    private Long id;
     @NotBlank(message = "Имя не может быть пустым.")
     @NotNull(message = "Имя должно передаваться параметром.")
-    private final String name;
+    private String name;
     @NotBlank(message = "Описание не может быть пустым.")
     @NotNull(message = "Описание должно передаваться параметром.")
-    private final String description;
+    private String description;
     @NotNull(message = "Нужно указать доступна вещь или нет.")
-    private final Boolean available;
-    private final Long requestId;
+    private Boolean available;
+    @NotNull
+    @EqualsAndHashCode.Include
+    private User owner;
+    private ItemRequest request;
 }
