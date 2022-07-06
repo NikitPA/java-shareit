@@ -25,7 +25,7 @@ public class InMemoryItemRepository implements ItemRepository {
         return items.values()
                 .stream()
                 .flatMap(Collection::stream)
-                .filter(item -> item.getId() == id).findFirst();
+                .filter(item -> item.getId().equals(id)).findFirst();
     }
 
     @Override
