@@ -21,5 +21,5 @@ public class Booking {
     private final Item item;
     private final User booker;
     @NotNull
-    private final boolean status;
+    private final Status status;
 }
