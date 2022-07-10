@@ -1,6 +1,6 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dto;
 
-import lombok.*;
+import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -8,14 +8,14 @@ import javax.validation.constraints.NotNull;
 /**
  * // TODO .
  */
-@Data
-@AllArgsConstructor
-public class User {
 
-    private long id;
+@Data
+public class UserDto {
+
+    private final long id;
     @NotNull(message = "Имя не может быть пустым.")
-    private String name;
+    private final String name;
     @Email(message = "Адрес электронной почты должен быть соответствующего формата.")
     @NotNull(message = "Адрес электронной почты не может быть пустым.")
-    private String email;
+    private final String email;
 }
