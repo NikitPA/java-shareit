@@ -20,7 +20,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment createComment(Comment comment, User user, Item item) {
         boolean match = bookingService.getAllBookingByUser("PAST", user)
                 .stream()
-                .anyMatch(booking -> booking.getItem().getId() == item.getId()
+                .anyMatch(booking -> booking.getItem().getId().equals(item.getId())
                         && booking.getStatus() == Status.APPROVED);
         if (!match) {
             throw new UserNotGiveItemException(user.getId(), item.getId());
