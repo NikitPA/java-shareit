@@ -17,10 +17,10 @@ public class BookingDto {
     private Long id;
 
     @NotNull
-    private LocalDateTime startDateTime;
+    private LocalDateTime start;
 
     @NotNull
-    private LocalDateTime endDateTime;
+    private LocalDateTime end;
 
     private Item item;
 
