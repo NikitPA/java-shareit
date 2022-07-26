@@ -1,8 +1,8 @@
 package ru.practicum.shareit.item.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import ru.practicum.shareit.comment.CommentDto;
 
 import javax.validation.constraints.NotBlank;
@@ -14,7 +14,7 @@ import java.util.Collection;
  */
 @Data
 @AllArgsConstructor
-public class ItemDto {
+public class OwnerItemDto {
 
     private final Long id;
 
@@ -31,5 +31,17 @@ public class ItemDto {
 
     private Long requestId;
 
-    private final Collection<CommentDto> comments;
+    private Collection<CommentDto> comments;
+
+    private Booking lastBooking;
+
+    private Booking nextBooking;
+
+    @AllArgsConstructor
+    @Getter
+    public static class Booking {
+        private Long id;
+
+        private Long bookerId;
+    }
 }

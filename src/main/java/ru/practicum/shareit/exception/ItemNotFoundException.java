@@ -1,7 +1,9 @@
 package ru.practicum.shareit.exception;
 
+import java.text.MessageFormat;
+
 public class ItemNotFoundException extends RuntimeException {
-    public ItemNotFoundException(String message) {
-        super(message);
+    public ItemNotFoundException(Long itemId) {
+        super(MessageFormat.format("Товар {0} не найден.", itemId));
     }
 }

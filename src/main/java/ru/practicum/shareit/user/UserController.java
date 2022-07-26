@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
+    private final String pathVariable = "userId";
 
     @GetMapping
     public ResponseEntity<Collection<UserDto>> getUsers() {
@@ -35,8 +37,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable("userId") @Min(1) long userId) {
-        User userById = userService.getUserById(userId);
+    public ResponseEntity<UserDto> getUserById(@PathVariable(pathVariable) @Min(1) long userId) {
+        User userById = userService.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         return new ResponseEntity<>(UserMapper.toUserDto(userById), HttpStatus.OK);
     }
 
@@ -47,14 +49,14 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("userId") long userId,
+    public ResponseEntity<UserDto> updateUser(@PathVariable(pathVariable) long userId,
                                               @RequestBody Map<Object, Object> updateFields) {
         User user = userService.updateUser(userId, updateFields);
         return new ResponseEntity<>(UserMapper.toUserDto(user), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") long userId) {
+    public ResponseEntity<String> deleteUser(@PathVariable(pathVariable) long userId) {
         userService.deleteUser(userId);
         return new ResponseEntity<>("valid", HttpStatus.OK);
     }

@@ -2,13 +2,12 @@ package ru.practicum.shareit.exception;
 
 import lombok.Getter;
 
+import java.text.MessageFormat;
+
 @Getter
 public class UserNotFoundException extends RuntimeException {
 
-    private final String fieldName;
-
-    public UserNotFoundException(String message) {
-        super(message);
-        fieldName = "User";
+    public UserNotFoundException(Long userId) {
+        super(MessageFormat.format("Пользователь {0} не найден", userId));
     }
 }

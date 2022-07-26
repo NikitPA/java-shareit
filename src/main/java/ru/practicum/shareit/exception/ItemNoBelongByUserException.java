@@ -1,14 +1,11 @@
 package ru.practicum.shareit.exception;
 
-import lombok.Getter;
+import java.text.MessageFormat;
 
-@Getter
 public class ItemNoBelongByUserException extends RuntimeException {
 
-    private final String fieldName;
 
-    public ItemNoBelongByUserException(String message) {
-        super(message);
-        fieldName = "User and Item";
+    public ItemNoBelongByUserException(Long itemId, Long userId) {
+        super(MessageFormat.format("Вещь {0} не принадлежит пользователю {1}", itemId, userId));
     }
 }
