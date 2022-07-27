@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.BookingNotFoundException;
 import ru.practicum.shareit.exception.ItemBelongByUserException;
@@ -17,6 +18,7 @@ import java.util.List;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
+    private static final String nameVariable = "startDateTime";
 
     @Override
     public Booking createBooking(Booking booking, User user) {
@@ -63,25 +65,33 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getAllBookingByUser(String state, User user) {
         switch (state) {
             case ("ALL"):
-                return bookingRepository.findAllByBookerOrderByStartDateTimeDesc(user);
+                return bookingRepository.findAllByBooker(user, Sort.by(nameVariable).descending());
             case ("PAST"):
                 return bookingRepository
-                        .findAllByBookerAndEndDateTimeBeforeOrderByStartDateTimeDesc(user, LocalDateTime.now());
+                        .findAllByBookerAndEndDateTimeBefore(
+                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                        );
             case ("CURRENT"):
                 LocalDateTime now = LocalDateTime.now();
                 return bookingRepository
-                        .findAllByBookerAndStartDateTimeBeforeAndEndDateTimeAfterOrderByStartDateTimeDesc(
-                                user, now, now
+                        .findAllByBookerAndStartDateTimeBeforeAndEndDateTimeAfter(
+                                user, now, now, Sort.by(nameVariable).descending()
                         );
             case ("FUTURE"):
                 return bookingRepository
-                        .findAllByBookerAndStartDateTimeAfterOrderByStartDateTimeDesc(user, LocalDateTime.now());
+                        .findAllByBookerAndStartDateTimeAfter(
+                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                        );
             case ("WAITING"):
                 return bookingRepository
-                        .findAllByBookerAndStatusOrderByStartDateTimeDesc(user, Status.WAITING);
+                        .findAllByBookerAndStatus(
+                                user, Status.WAITING, Sort.by(nameVariable).descending()
+                        );
             case ("REJECTED"):
                 return bookingRepository
-                        .findAllByBookerAndStatusOrderByStartDateTimeDesc(user, Status.REJECTED);
+                        .findAllByBookerAndStatus(
+                                user, Status.REJECTED, Sort.by(nameVariable).descending()
+                        );
             default:
                 throw new IllegalArgumentException("Передано не соответствующее состояние бронирования.");
         }
@@ -97,25 +107,33 @@ public class BookingServiceImpl implements BookingService {
         }
         switch (state) {
             case ("ALL"):
-                return bookingRepository.findAllByItem_OwnerOrderByStartDateTimeDesc(user);
+                return bookingRepository.findAllByItem_Owner(user, Sort.by(nameVariable).descending());
             case ("PAST"):
                 return bookingRepository
-                        .findAllByItem_OwnerAndEndDateTimeBeforeOrderByStartDateTimeDesc(user, LocalDateTime.now());
+                        .findAllByItem_OwnerAndEndDateTimeBefore(
+                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                        );
             case ("CURRENT"):
                 LocalDateTime now = LocalDateTime.now();
                 return bookingRepository
-                        .findAllByItem_OwnerAndStartDateTimeBeforeAndEndDateTimeAfterOrderByStartDateTimeDesc(
-                                user, now, now
+                        .findAllByItem_OwnerAndStartDateTimeBeforeAndEndDateTimeAfter(
+                                user, now, now, Sort.by(nameVariable).descending()
                         );
             case ("FUTURE"):
                 return bookingRepository
-                        .findAllByItem_OwnerAndStartDateTimeAfterOrderByStartDateTimeDesc(user, LocalDateTime.now());
+                        .findAllByItem_OwnerAndStartDateTimeAfter(
+                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                        );
             case ("WAITING"):
                 return bookingRepository
-                        .findAllByItem_OwnerAndStatusOrderByStartDateTimeDesc(user, Status.WAITING);
+                        .findAllByItem_OwnerAndStatus(
+                                user, Status.WAITING, Sort.by(nameVariable).descending()
+                        );
             case ("REJECTED"):
                 return bookingRepository
-                        .findAllByItem_OwnerAndStatusOrderByStartDateTimeDesc(user, Status.REJECTED);
+                        .findAllByItem_OwnerAndStatus(
+                                user, Status.REJECTED, Sort.by(nameVariable).descending()
+                        );
             default:
                 throw new IllegalArgumentException("Передано не соответствующее состояние бронирования.");
         }
@@ -124,7 +142,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking getLastBookingOfItem(User user, LocalDateTime now) {
         return bookingRepository
-                .findAllByItem_OwnerAndEndDateTimeBeforeOrderByStartDateTimeDesc(user, now)
+                .findAllByItem_OwnerAndEndDateTimeBefore(user, now, Sort.by(nameVariable).descending())
                 .stream()
                 .max(Comparator.comparing(Booking::getEndDateTime))
                 .orElse(null);
@@ -133,7 +151,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking getNextBookingOfItem(User user, LocalDateTime now) {
         return bookingRepository
-                .findAllByItem_OwnerAndStartDateTimeAfterOrderByStartDateTimeDesc(user, now)
+                .findAllByItem_OwnerAndStartDateTimeAfter(user, now, Sort.by(nameVariable).descending())
                 .stream()
                 .findFirst()
                 .orElse(null);

@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.user.User;
 
@@ -10,27 +11,27 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByItem_Owner(User user);
 
-    List<Booking> findAllByBookerOrderByStartDateTimeDesc(User user);
+    List<Booking> findAllByBooker(User user, Sort sort);
 
-    List<Booking> findAllByBookerAndStatusOrderByStartDateTimeDesc(User user, Status status);
+    List<Booking> findAllByBookerAndStatus(User user, Status status, Sort sort);
 
-    List<Booking> findAllByBookerAndEndDateTimeBeforeOrderByStartDateTimeDesc(User user, LocalDateTime now);
+    List<Booking> findAllByBookerAndEndDateTimeBefore(User user, LocalDateTime now, Sort sort);
 
-    List<Booking> findAllByBookerAndStartDateTimeAfterOrderByStartDateTimeDesc(User user, LocalDateTime now);
+    List<Booking> findAllByBookerAndStartDateTimeAfter(User user, LocalDateTime now, Sort sort);
 
-    List<Booking> findAllByBookerAndStartDateTimeBeforeAndEndDateTimeAfterOrderByStartDateTimeDesc(
-            User user, LocalDateTime start, LocalDateTime end
+    List<Booking> findAllByBookerAndStartDateTimeBeforeAndEndDateTimeAfter(
+            User user, LocalDateTime start, LocalDateTime end, Sort sort
     );
 
-    List<Booking> findAllByItem_OwnerOrderByStartDateTimeDesc(User user);
+    List<Booking> findAllByItem_Owner(User user, Sort sort);
 
-    List<Booking> findAllByItem_OwnerAndStatusOrderByStartDateTimeDesc(User user, Status status);
+    List<Booking> findAllByItem_OwnerAndStatus(User user, Status status, Sort sort);
 
-    List<Booking> findAllByItem_OwnerAndEndDateTimeBeforeOrderByStartDateTimeDesc(User user, LocalDateTime now);
+    List<Booking> findAllByItem_OwnerAndEndDateTimeBefore(User user, LocalDateTime now, Sort sort);
 
-    List<Booking> findAllByItem_OwnerAndStartDateTimeAfterOrderByStartDateTimeDesc(User user, LocalDateTime now);
+    List<Booking> findAllByItem_OwnerAndStartDateTimeAfter(User user, LocalDateTime now, Sort sort);
 
-    List<Booking> findAllByItem_OwnerAndStartDateTimeBeforeAndEndDateTimeAfterOrderByStartDateTimeDesc(
-            User user, LocalDateTime start, LocalDateTime end
+    List<Booking> findAllByItem_OwnerAndStartDateTimeBeforeAndEndDateTimeAfter(
+            User user, LocalDateTime start, LocalDateTime end, Sort sort
     );
 }
