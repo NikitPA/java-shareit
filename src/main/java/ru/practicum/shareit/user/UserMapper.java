@@ -23,7 +23,7 @@ public class UserMapper {
                 user.getId(),
                 checkName(user, updateFields),
                 checkEmail(user, updateFields)
-                );
+        );
     }
 
     private static String checkName(User user, Map<Object, Object> updateFields) {

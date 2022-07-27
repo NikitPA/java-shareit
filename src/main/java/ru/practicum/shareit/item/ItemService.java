@@ -1,13 +1,14 @@
 package ru.practicum.shareit.item;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ItemService {
 
-    Collection<Item> getAllItemsByUser(Long userId);
+    List<Item> getAllItemsByUser(Long userId);
 
-    Item getItemById(Long id);
+    Optional<Item> getItemById(Long id);
 
     Item createItem(Item item);
 
@@ -15,5 +16,5 @@ public interface ItemService {
 
     Item updateItem(Long id, Map<Object, Object> updateFields, Long userId);
 
-    Collection<Item> findItemsByKeyword(String text);
+    List<Item> findItemsByKeyword(String text);
 }

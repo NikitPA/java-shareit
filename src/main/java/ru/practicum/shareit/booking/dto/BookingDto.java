@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import ru.practicum.shareit.booking.Status;
 
 import javax.validation.constraints.NotNull;
@@ -10,16 +11,23 @@ import java.time.LocalDateTime;
  * // TODO .
  */
 @Data
+@AllArgsConstructor
 public class BookingDto {
 
+    private Long id;
+
     @NotNull
-    private final LocalDateTime startDateTime;
+    private LocalDateTime start;
+
     @NotNull
-    private final LocalDateTime endDateTime;
-    private final Item item;
-    private final User user;
+    private LocalDateTime end;
+
+    private Item item;
+
+    private Booker booker;
+
     @NotNull
-    private final Status status;
+    private Status status;
 
 
     @Data
@@ -29,7 +37,7 @@ public class BookingDto {
     }
 
     @Data
-    public static class User {
+    public static class Booker {
         private final Long id;
         private final String name;
     }

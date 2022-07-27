@@ -1,7 +1,9 @@
 package ru.practicum.shareit.requests;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -9,12 +11,17 @@ import java.time.LocalDateTime;
  * // TODO .
  */
 @Data
+@Entity
+@Table(name = "item_request")
+@NoArgsConstructor
 public class ItemRequest {
 
-    private final long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     @NotNull
-    private final String description;
-    private final long requesterId;
+    private String description;
+    private long requesterId;
     @NotNull
-    private final LocalDateTime created;
+    private LocalDateTime created;
 }
