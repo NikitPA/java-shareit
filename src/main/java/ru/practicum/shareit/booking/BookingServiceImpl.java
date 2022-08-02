@@ -7,6 +7,7 @@ import ru.practicum.shareit.exception.BookingNotFoundException;
 import ru.practicum.shareit.exception.ItemBelongByUserException;
 import ru.practicum.shareit.exception.ItemNoBelongByUserException;
 import ru.practicum.shareit.exception.ItemNotAvailableException;
+import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
@@ -93,7 +94,7 @@ public class BookingServiceImpl implements BookingService {
                                 user, Status.REJECTED, Sort.by(nameVariable).descending()
                         );
             default:
-                throw new IllegalArgumentException("Передано не соответствующее состояние бронирования.");
+                throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
 
@@ -135,23 +136,23 @@ public class BookingServiceImpl implements BookingService {
                                 user, Status.REJECTED, Sort.by(nameVariable).descending()
                         );
             default:
-                throw new IllegalArgumentException("Передано не соответствующее состояние бронирования.");
+                throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
 
     @Override
-    public Booking getLastBookingOfItem(User user, LocalDateTime now) {
+    public Booking getLastBookingOfItem(Item item, LocalDateTime now) {
         return bookingRepository
-                .findAllByItem_OwnerAndEndDateTimeBefore(user, now, Sort.by(nameVariable).descending())
+                .findAllByItemAndEndDateTimeBefore(item, now, Sort.by(nameVariable).descending())
                 .stream()
                 .max(Comparator.comparing(Booking::getEndDateTime))
                 .orElse(null);
     }
 
     @Override
-    public Booking getNextBookingOfItem(User user, LocalDateTime now) {
+    public Booking getNextBookingOfItem(Item item, LocalDateTime now) {
         return bookingRepository
-                .findAllByItem_OwnerAndStartDateTimeAfter(user, now, Sort.by(nameVariable).descending())
+                .findAllByItemAndStartDateTimeAfter(item, now, Sort.by(nameVariable).descending())
                 .stream()
                 .findFirst()
                 .orElse(null);

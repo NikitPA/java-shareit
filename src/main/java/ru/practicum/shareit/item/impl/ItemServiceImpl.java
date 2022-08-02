@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ItemNoBelongByUserException;
 import ru.practicum.shareit.exception.ItemNotFoundException;
@@ -27,7 +28,7 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> getAllItemsByUser(@NotNull Long userId) {
         return itemRepository.findAllByOwnerEquals(userService.getUserById(userId).orElseThrow(
                         () -> new UserNotFoundException(userId)
-                ))
+                ), Sort.by("id").ascending())
                 .stream()
                 .filter(item -> item.getOwner().getId() == userId)
                 .collect(Collectors.toList());

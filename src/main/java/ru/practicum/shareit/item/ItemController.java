@@ -40,13 +40,13 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<Collection<OwnerItemDto>> getItems(@RequestHeader(header) Long userId) {
-        User user = userService.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        userService.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Collection<Item> allItemsByUser = itemService.getAllItemsByUser(userId);
         LocalDateTime now = LocalDateTime.now();
         List<OwnerItemDto> allItemDtoByUser = allItemsByUser.stream()
                 .map(item -> ItemMapper.toOwnerItemDto(
-                        item, bookingService.getNextBookingOfItem(user, now),
-                        bookingService.getLastBookingOfItem(user, now)))
+                        item, bookingService.getNextBookingOfItem(item, now),
+                        bookingService.getLastBookingOfItem(item, now)))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(allItemDtoByUser, HttpStatus.OK);
     }
@@ -54,13 +54,13 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ResponseEntity<OwnerItemDto> getItemById(@PathVariable(pathVariable) @Min(1) long itemId,
                                                     @RequestHeader(header) Long userId) {
-        User user = userService.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        userService.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Item itemById = itemService.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
         if (userId == itemById.getOwner().getId()) {
             LocalDateTime now = LocalDateTime.now();
             return new ResponseEntity<>(ItemMapper.toOwnerItemDto(
-                    itemById, bookingService.getNextBookingOfItem(user, now),
-                    bookingService.getLastBookingOfItem(user, now)), HttpStatus.OK);
+                    itemById, bookingService.getNextBookingOfItem(itemById, now),
+                    bookingService.getLastBookingOfItem(itemById, now)), HttpStatus.OK);
         }
         return new ResponseEntity<>(ItemMapper.toOwnerItemDto(
                 itemById, null, null), HttpStatus.OK

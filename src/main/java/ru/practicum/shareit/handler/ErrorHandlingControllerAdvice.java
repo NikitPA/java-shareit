@@ -63,9 +63,8 @@ public class ErrorHandlingControllerAdvice {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ValidationErrorResponse onIllegalArgumentException(IllegalArgumentException e) {
-        final Violation violation = new Violation(e.getMessage());
-        return new ValidationErrorResponse(List.of(violation));
+    public Violation onIllegalArgumentException(IllegalArgumentException e) {
+        return new Violation(e.getMessage());
     }
 
     @ExceptionHandler(ItemNotAvailableException.class)
