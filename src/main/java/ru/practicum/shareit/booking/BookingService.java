@@ -3,7 +3,6 @@ package ru.practicum.shareit.booking;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingService {
@@ -18,7 +17,7 @@ public interface BookingService {
 
     List<Booking> getAllBookingByOwner(String state, User user);
 
-    Booking getLastBookingOfItem(Item item, LocalDateTime now);
+    Booking getLastBookingOfItem(Item item);
 
-    Booking getNextBookingOfItem(Item item, LocalDateTime now);
+    Booking getNextBookingOfItem(Item item);
 }

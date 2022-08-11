@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class UserDto {
 
-    private final long id;
+    private final Long id;
 
     @NotNull(message = "Имя не может быть пустым.")
     private final String name;

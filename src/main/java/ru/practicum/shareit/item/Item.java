@@ -2,7 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.*;
 import ru.practicum.shareit.comment.Comment;
-import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
@@ -49,7 +49,6 @@ public class Item {
     @EqualsAndHashCode.Include
     private User owner;
 
-    @OneToOne
-    @JoinColumn(name = "request_id", referencedColumnName = "id")
+    @ManyToOne
     private ItemRequest request;
 }

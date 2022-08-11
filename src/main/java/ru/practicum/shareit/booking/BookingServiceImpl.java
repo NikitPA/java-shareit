@@ -10,6 +10,7 @@ import ru.practicum.shareit.exception.ItemNotAvailableException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +21,7 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private static final String nameVariable = "startDateTime";
+    private final Clock clock;
 
     @Override
     public Booking createBooking(Booking booking, User user) {
@@ -40,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository
                 .findById(bookingId).orElseThrow(() -> new BookingNotFoundException(bookingId));
         if (booking.getItem().getOwner().getId() != user.getId()) {
-            throw new ItemNoBelongByUserException(booking.getItem().getId(), booking.getBooker().getId());
+            throw new ItemNoBelongByUserException(booking.getItem().getId(), user.getId());
         }
         if (!booking.getItem().getAvailable()) {
             throw new ItemNotAvailableException(booking.getItem().getId());
@@ -70,10 +72,10 @@ public class BookingServiceImpl implements BookingService {
             case ("PAST"):
                 return bookingRepository
                         .findAllByBookerAndEndDateTimeBefore(
-                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                                user, LocalDateTime.now(clock), Sort.by(nameVariable).descending()
                         );
             case ("CURRENT"):
-                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime now = LocalDateTime.now(clock);
                 return bookingRepository
                         .findAllByBookerAndStartDateTimeBeforeAndEndDateTimeAfter(
                                 user, now, now, Sort.by(nameVariable).descending()
@@ -81,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
             case ("FUTURE"):
                 return bookingRepository
                         .findAllByBookerAndStartDateTimeAfter(
-                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                                user, LocalDateTime.now(clock), Sort.by(nameVariable).descending()
                         );
             case ("WAITING"):
                 return bookingRepository
@@ -112,10 +114,10 @@ public class BookingServiceImpl implements BookingService {
             case ("PAST"):
                 return bookingRepository
                         .findAllByItem_OwnerAndEndDateTimeBefore(
-                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                                user, LocalDateTime.now(clock), Sort.by(nameVariable).descending()
                         );
             case ("CURRENT"):
-                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime now = LocalDateTime.now(clock);
                 return bookingRepository
                         .findAllByItem_OwnerAndStartDateTimeBeforeAndEndDateTimeAfter(
                                 user, now, now, Sort.by(nameVariable).descending()
@@ -123,7 +125,7 @@ public class BookingServiceImpl implements BookingService {
             case ("FUTURE"):
                 return bookingRepository
                         .findAllByItem_OwnerAndStartDateTimeAfter(
-                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                                user, LocalDateTime.now(clock), Sort.by(nameVariable).descending()
                         );
             case ("WAITING"):
                 return bookingRepository
@@ -141,7 +143,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking getLastBookingOfItem(Item item, LocalDateTime now) {
+    public Booking getLastBookingOfItem(Item item) {
+        LocalDateTime now = LocalDateTime.now(clock);
         return bookingRepository
                 .findAllByItemAndEndDateTimeBefore(item, now, Sort.by(nameVariable).descending())
                 .stream()
@@ -150,7 +153,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking getNextBookingOfItem(Item item, LocalDateTime now) {
+    public Booking getNextBookingOfItem(Item item) {
+        LocalDateTime now = LocalDateTime.now(clock);
         return bookingRepository
                 .findAllByItemAndStartDateTimeAfter(item, now, Sort.by(nameVariable).descending())
                 .stream()

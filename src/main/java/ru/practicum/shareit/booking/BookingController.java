@@ -64,7 +64,8 @@ public class BookingController {
     @GetMapping
     public ResponseEntity<List<BookingDto>> getAllBookingByBooker(
             @RequestParam(name = "state", defaultValue = "ALL") String state,
-            @RequestHeader(header) Long userId) {
+            @RequestHeader(header) Long userId
+    ) {
         User user = userService.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         List<Booking> booking = bookingService.getAllBookingByUser(state, user);
         return new ResponseEntity<>(booking.stream()
@@ -75,7 +76,8 @@ public class BookingController {
     @GetMapping("owner")
     public ResponseEntity<List<BookingDto>> getAllBookingByOwner(
             @RequestParam(name = "state", defaultValue = "ALL") String state,
-            @RequestHeader(header) Long userId) {
+            @RequestHeader(header) Long userId
+    ) {
         User user = userService.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         List<Booking> booking = bookingService.getAllBookingByOwner(state, user);
         return new ResponseEntity<>(booking.stream()

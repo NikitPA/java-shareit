@@ -94,4 +94,11 @@ public class ErrorHandlingControllerAdvice {
         final Violation violation = new Violation(e.getMessage());
         return new ValidationErrorResponse(List.of(violation));
     }
+
+    @ExceptionHandler(ItemRequestNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ValidationErrorResponse onItemRequestNotFoundException(ItemRequestNotFoundException e) {
+        final Violation violation = new Violation(e.getMessage());
+        return new ValidationErrorResponse(List.of(violation));
+    }
 }

@@ -1,11 +1,16 @@
-package ru.practicum.shareit.requests;
+package ru.practicum.shareit.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * // TODO .
@@ -14,14 +19,22 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "item_request")
 @NoArgsConstructor
+@AllArgsConstructor
 public class ItemRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
     @NotNull
     private String description;
-    private long requesterId;
+
     @NotNull
     private LocalDateTime created;
+
+    @ManyToOne
+    private User requestor;
+
+    @OneToMany(mappedBy = "request")
+    private final Collection<Item> items = new ArrayList<>();
 }
