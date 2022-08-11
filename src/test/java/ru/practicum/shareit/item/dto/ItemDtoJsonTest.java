@@ -33,7 +33,7 @@ class ItemDtoJsonTest {
         final LocalDateTime created = LocalDateTime.of(2022, 2,10,10,10,10);
 
         ItemDto itemDto = new ItemDto(
-                id, name , description, available, requestId, List.of(
+                id, name, description, available, requestId, List.of(
                         new CommentDto(commentId, authorName, text, created)
         ));
 
