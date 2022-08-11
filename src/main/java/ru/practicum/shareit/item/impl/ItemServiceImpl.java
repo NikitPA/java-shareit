@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ItemNoBelongByUserException;
 import ru.practicum.shareit.exception.ItemNotFoundException;
@@ -31,7 +30,7 @@ public class ItemServiceImpl implements ItemService {
                         () -> new UserNotFoundException(userId)
                 ), pageable)
                 .stream()
-                .filter(item -> item.getOwner().getId() == userId)
+                .filter(item -> Objects.equals(item.getOwner().getId(), userId))
                 .collect(Collectors.toList());
     }
 

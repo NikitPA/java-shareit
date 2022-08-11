@@ -41,7 +41,7 @@ class OwnerItemDtoJsonTest {
         OwnerItemDto ownerItemDto = new OwnerItemDto(
                 id, name, description, available, requestId,
                 List.of(new CommentDto(commentId, authorName, text, created)),
-                new OwnerItemDto.Booking(bookingIdLast, bookerIdLast) ,
+                new OwnerItemDto.Booking(bookingIdLast, bookerIdLast),
                 new OwnerItemDto.Booking(bookingIdNext, bookerIdNext)
         );
 

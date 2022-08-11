@@ -23,6 +23,7 @@ import javax.validation.constraints.Min;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -64,7 +65,7 @@ public class ItemController {
                                                     @RequestHeader(header) Long userId) {
         userService.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Item itemById = itemService.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
-        if (userId == itemById.getOwner().getId()) {
+        if (Objects.equals(userId, itemById.getOwner().getId())) {
             return new ResponseEntity<>(ItemMapper.toOwnerItemDto(
                     itemById, bookingService.getNextBookingOfItem(itemById),
                     bookingService.getLastBookingOfItem(itemById)), HttpStatus.OK);

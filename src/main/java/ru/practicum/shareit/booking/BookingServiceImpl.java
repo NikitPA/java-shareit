@@ -14,6 +14,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class BookingServiceImpl implements BookingService {
         if (!booking.getItem().getAvailable()) {
             throw new ItemNotAvailableException(booking.getItem().getId());
         }
-        if (booking.getItem().getOwner().getId() == user.getId()) {
+        if (Objects.equals(booking.getItem().getOwner().getId(), user.getId())) {
             throw new ItemBelongByUserException(booking.getItem().getOwner().getId(), booking.getItem().getId());
         }
         return bookingRepository.save(booking);
@@ -41,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking updateStatus(Long bookingId, User user, Boolean isStatus) {
         Booking booking = bookingRepository
                 .findById(bookingId).orElseThrow(() -> new BookingNotFoundException(bookingId));
-        if (booking.getItem().getOwner().getId() != user.getId()) {
+        if (!Objects.equals(booking.getItem().getOwner().getId(), user.getId())) {
             throw new ItemNoBelongByUserException(booking.getItem().getId(), user.getId());
         }
         if (!booking.getItem().getAvailable()) {
@@ -58,7 +59,8 @@ public class BookingServiceImpl implements BookingService {
     public Booking getBookingById(Long bookingId, User user) {
         Booking booking = bookingRepository
                 .findById(bookingId).orElseThrow(() -> new BookingNotFoundException(bookingId));
-        if (booking.getItem().getOwner().getId() == user.getId() || booking.getBooker().getId() == user.getId()) {
+        if (Objects.equals(booking.getItem().getOwner().getId(), user.getId()) ||
+                Objects.equals(booking.getBooker().getId(), user.getId())) {
             return booking;
         }
         throw new ItemNoBelongByUserException(booking.getItem().getId(), booking.getBooker().getId());
