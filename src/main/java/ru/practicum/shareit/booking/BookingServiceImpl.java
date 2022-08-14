@@ -7,11 +7,14 @@ import ru.practicum.shareit.exception.BookingNotFoundException;
 import ru.practicum.shareit.exception.ItemBelongByUserException;
 import ru.practicum.shareit.exception.ItemNoBelongByUserException;
 import ru.practicum.shareit.exception.ItemNotAvailableException;
+import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private static final String nameVariable = "startDateTime";
+    private final Clock clock;
 
     @Override
     public Booking createBooking(Booking booking, User user) {
@@ -28,7 +32,7 @@ public class BookingServiceImpl implements BookingService {
         if (!booking.getItem().getAvailable()) {
             throw new ItemNotAvailableException(booking.getItem().getId());
         }
-        if (booking.getItem().getOwner().getId() == user.getId()) {
+        if (Objects.equals(booking.getItem().getOwner().getId(), user.getId())) {
             throw new ItemBelongByUserException(booking.getItem().getOwner().getId(), booking.getItem().getId());
         }
         return bookingRepository.save(booking);
@@ -38,8 +42,8 @@ public class BookingServiceImpl implements BookingService {
     public Booking updateStatus(Long bookingId, User user, Boolean isStatus) {
         Booking booking = bookingRepository
                 .findById(bookingId).orElseThrow(() -> new BookingNotFoundException(bookingId));
-        if (booking.getItem().getOwner().getId() != user.getId()) {
-            throw new ItemNoBelongByUserException(booking.getItem().getId(), booking.getBooker().getId());
+        if (!Objects.equals(booking.getItem().getOwner().getId(), user.getId())) {
+            throw new ItemNoBelongByUserException(booking.getItem().getId(), user.getId());
         }
         if (!booking.getItem().getAvailable()) {
             throw new ItemNotAvailableException(booking.getItem().getId());
@@ -55,7 +59,8 @@ public class BookingServiceImpl implements BookingService {
     public Booking getBookingById(Long bookingId, User user) {
         Booking booking = bookingRepository
                 .findById(bookingId).orElseThrow(() -> new BookingNotFoundException(bookingId));
-        if (booking.getItem().getOwner().getId() == user.getId() || booking.getBooker().getId() == user.getId()) {
+        if (Objects.equals(booking.getItem().getOwner().getId(), user.getId()) ||
+                Objects.equals(booking.getBooker().getId(), user.getId())) {
             return booking;
         }
         throw new ItemNoBelongByUserException(booking.getItem().getId(), booking.getBooker().getId());
@@ -69,10 +74,10 @@ public class BookingServiceImpl implements BookingService {
             case ("PAST"):
                 return bookingRepository
                         .findAllByBookerAndEndDateTimeBefore(
-                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                                user, LocalDateTime.now(clock), Sort.by(nameVariable).descending()
                         );
             case ("CURRENT"):
-                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime now = LocalDateTime.now(clock);
                 return bookingRepository
                         .findAllByBookerAndStartDateTimeBeforeAndEndDateTimeAfter(
                                 user, now, now, Sort.by(nameVariable).descending()
@@ -80,7 +85,7 @@ public class BookingServiceImpl implements BookingService {
             case ("FUTURE"):
                 return bookingRepository
                         .findAllByBookerAndStartDateTimeAfter(
-                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                                user, LocalDateTime.now(clock), Sort.by(nameVariable).descending()
                         );
             case ("WAITING"):
                 return bookingRepository
@@ -93,7 +98,7 @@ public class BookingServiceImpl implements BookingService {
                                 user, Status.REJECTED, Sort.by(nameVariable).descending()
                         );
             default:
-                throw new IllegalArgumentException("Передано не соответствующее состояние бронирования.");
+                throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
 
@@ -111,10 +116,10 @@ public class BookingServiceImpl implements BookingService {
             case ("PAST"):
                 return bookingRepository
                         .findAllByItem_OwnerAndEndDateTimeBefore(
-                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                                user, LocalDateTime.now(clock), Sort.by(nameVariable).descending()
                         );
             case ("CURRENT"):
-                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime now = LocalDateTime.now(clock);
                 return bookingRepository
                         .findAllByItem_OwnerAndStartDateTimeBeforeAndEndDateTimeAfter(
                                 user, now, now, Sort.by(nameVariable).descending()
@@ -122,7 +127,7 @@ public class BookingServiceImpl implements BookingService {
             case ("FUTURE"):
                 return bookingRepository
                         .findAllByItem_OwnerAndStartDateTimeAfter(
-                                user, LocalDateTime.now(), Sort.by(nameVariable).descending()
+                                user, LocalDateTime.now(clock), Sort.by(nameVariable).descending()
                         );
             case ("WAITING"):
                 return bookingRepository
@@ -135,23 +140,25 @@ public class BookingServiceImpl implements BookingService {
                                 user, Status.REJECTED, Sort.by(nameVariable).descending()
                         );
             default:
-                throw new IllegalArgumentException("Передано не соответствующее состояние бронирования.");
+                throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
 
     @Override
-    public Booking getLastBookingOfItem(User user, LocalDateTime now) {
+    public Booking getLastBookingOfItem(Item item) {
+        LocalDateTime now = LocalDateTime.now(clock);
         return bookingRepository
-                .findAllByItem_OwnerAndEndDateTimeBefore(user, now, Sort.by(nameVariable).descending())
+                .findAllByItemAndEndDateTimeBefore(item, now, Sort.by(nameVariable).descending())
                 .stream()
                 .max(Comparator.comparing(Booking::getEndDateTime))
                 .orElse(null);
     }
 
     @Override
-    public Booking getNextBookingOfItem(User user, LocalDateTime now) {
+    public Booking getNextBookingOfItem(Item item) {
+        LocalDateTime now = LocalDateTime.now(clock);
         return bookingRepository
-                .findAllByItem_OwnerAndStartDateTimeAfter(user, now, Sort.by(nameVariable).descending())
+                .findAllByItemAndStartDateTimeAfter(item, now, Sort.by(nameVariable).descending())
                 .stream()
                 .findFirst()
                 .orElse(null);

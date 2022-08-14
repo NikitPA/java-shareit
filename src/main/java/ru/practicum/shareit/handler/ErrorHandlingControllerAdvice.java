@@ -63,9 +63,8 @@ public class ErrorHandlingControllerAdvice {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ValidationErrorResponse onIllegalArgumentException(IllegalArgumentException e) {
-        final Violation violation = new Violation(e.getMessage());
-        return new ValidationErrorResponse(List.of(violation));
+    public Violation onIllegalArgumentException(IllegalArgumentException e) {
+        return new Violation(e.getMessage());
     }
 
     @ExceptionHandler(ItemNotAvailableException.class)
@@ -92,6 +91,13 @@ public class ErrorHandlingControllerAdvice {
     @ExceptionHandler(UserNotGiveItemException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationErrorResponse onUserNotGiveItemException(UserNotGiveItemException e) {
+        final Violation violation = new Violation(e.getMessage());
+        return new ValidationErrorResponse(List.of(violation));
+    }
+
+    @ExceptionHandler(ItemRequestNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ValidationErrorResponse onItemRequestNotFoundException(ItemRequestNotFoundException e) {
         final Violation violation = new Violation(e.getMessage());
         return new ValidationErrorResponse(List.of(violation));
     }

@@ -5,7 +5,7 @@ import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.comment.CommentMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.OwnerItemDto;
-import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import java.util.Map;

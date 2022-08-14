@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ItemNoBelongByUserException;
 import ru.practicum.shareit.exception.ItemNotFoundException;
@@ -24,12 +25,12 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
 
     @Override
-    public List<Item> getAllItemsByUser(@NotNull Long userId) {
+    public List<Item> getAllItemsByUser(@NotNull Long userId, Pageable pageable) {
         return itemRepository.findAllByOwnerEquals(userService.getUserById(userId).orElseThrow(
                         () -> new UserNotFoundException(userId)
-                ))
+                ), pageable)
                 .stream()
-                .filter(item -> item.getOwner().getId() == userId)
+                .filter(item -> Objects.equals(item.getOwner().getId(), userId))
                 .collect(Collectors.toList());
     }
 
@@ -46,7 +47,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void deleteItem(@NotNull Long itemId, @NotNull Long userId) {
         User userById = userService.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        Item itemById = getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
+        Item itemById = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
         validate(itemById.getOwner().getId(), userById.getId());
         itemRepository.delete(itemById);
     }
@@ -54,18 +55,18 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item updateItem(@NotNull Long itemId, @NotNull Map<Object, Object> updateFields, Long userId) {
         User userById = userService.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        Item itemById = getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
+        Item itemById = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
         validate(itemById.getOwner().getId(), userById.getId());
         Item item = ItemMapper.patchUser(itemById, updateFields);
         return itemRepository.save(item);
     }
 
     @Override
-    public List<Item> findItemsByKeyword(@NotNull String text) {
+    public List<Item> findItemsByKeyword(@NotNull String text, Pageable pageable) {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        return itemRepository.findAllByText(text);
+        return itemRepository.findAllByText(text, pageable);
     }
 
     private void validate(Long itemId, Long userId) {
