@@ -24,11 +24,6 @@ jobs:
           wget --no-check-certificate -P /tmp/ https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh &&
           chmod a+x /tmp/wait-for-it.sh
 
-      - name: Setup runner timezone
-        uses: szenius/set-timezone@v1.0
-        with:
-          timezoneLinux: "Europe/Moscow"
-
       - name: Checkout tests
         uses: actions/checkout@v3
         with:

@@ -26,11 +26,12 @@ services:
       DB_NAME: shareit
       DB_USER: shareit
       DB_PASS: shareit
-      TZ: "Europe/Moscow"
 
   db:
     image: postgres:14.3-alpine
     container_name: db
+    ports:
+      - "6464:5432"
     restart: always
     environment:
       POSTGRES_DB: shareit
