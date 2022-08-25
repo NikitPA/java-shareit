@@ -7,7 +7,6 @@ import ru.practicum.server.item.Item;
 import ru.practicum.server.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,10 +25,8 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     private String description;
 
-    @NotNull
     private LocalDateTime created;
 
     @ManyToOne

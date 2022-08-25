@@ -6,8 +6,6 @@ import ru.practicum.server.request.ItemRequest;
 import ru.practicum.server.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -29,15 +27,10 @@ public class Item {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank(message = "Имя не может быть пустым.")
-    @NotNull(message = "Имя должно передаваться параметром.")
     private String name;
 
-    @NotBlank(message = "Описание не может быть пустым.")
-    @NotNull(message = "Описание должно передаваться параметром.")
     private String description;
 
-    @NotNull(message = "Нужно указать доступна вещь или нет.")
     private Boolean available;
 
     @OneToMany(mappedBy = "item")
@@ -45,7 +38,6 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @NotNull
     @EqualsAndHashCode.Include
     private User owner;
 

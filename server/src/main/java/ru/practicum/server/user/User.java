@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 
 /**
  * // TODO .
@@ -22,11 +20,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Имя не может быть пустым.")
     private String name;
 
-    @Email(message = "Адрес электронной почты должен быть соответствующего формата.")
-    @NotNull(message = "Адрес электронной почты не может быть пустым.")
     @Column(unique = true)
     private String email;
 }

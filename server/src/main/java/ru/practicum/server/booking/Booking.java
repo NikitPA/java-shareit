@@ -7,7 +7,6 @@ import ru.practicum.server.item.Item;
 import ru.practicum.server.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -24,10 +23,8 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     private LocalDateTime startDateTime;
 
-    @NotNull
     private LocalDateTime endDateTime;
 
     @ManyToOne
@@ -37,6 +34,5 @@ public class Booking {
     private User booker;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     private Status status;
 }
