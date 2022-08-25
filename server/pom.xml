@@ -14,10 +14,6 @@
     <name>ShareIt Server</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
