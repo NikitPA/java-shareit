@@ -10,5 +10,5 @@
 REST-сервисы с использованием Spring MVC + SpringData + Hibernate + Docker.
 
 <p align="center">
-       <img src="https://little.kylerconway.com/images/golang-what.gif" width="300"><img src="https://intro.rustbridge.com/img/ferris.gif" width="300">
+       <img src="https://intro.rustbridge.com/img/ferris.gif" width="300">
 </p>
